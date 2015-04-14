@@ -2,16 +2,21 @@ package com.example.chatappdemo;
 
 
 import android.content.Context;
+import android.util.Log;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.iqregister.AccountManager;
-
+import org.jivesoftware.smack.packet.Presence.Type;
 import java.io.IOException;
+import java.util.Collection;
 
 
 public class ChatApp {
@@ -100,4 +105,57 @@ public class ChatApp {
             return false;
         }
     }
+
+
+    /**
+     * Return Friend list
+     *
+     * @return
+     */
+    public Collection<RosterEntry> getFriendList() {
+        Roster roster = Roster.getInstanceFor(connection);
+        Collection<RosterEntry> entries = roster.getEntries();
+        for (RosterEntry entry : entries) {
+            Log.d("XMPPChatDemoActivity",
+                    "--------------------------------------");
+            Log.d("XMPPChatDemoActivity", "RosterEntry " + entry);
+            Log.d("XMPPChatDemoActivity", "User: " + entry.getUser());
+            Log.d("XMPPChatDemoActivity", "Name: " + entry.getName());
+            Log.d("XMPPChatDemoActivity", "Status: " + entry.getStatus());
+            Log.d("XMPPChatDemoActivity", "Type: " + entry.getType());
+            Presence entryPresence = roster.getPresence(entry.getUser());
+
+            Log.d("XMPPChatDemoActivity",
+                    "Presence Status: " + entryPresence.getStatus());
+            Log.d("XMPPChatDemoActivity",
+                    "Presence Type: " + entryPresence.getType());
+            Presence.Type type = entryPresence.getType();
+            if (type == Presence.Type.available)
+                Log.d("XMPPChatDemoActivity", "Presence AVIALABLE");
+            Log.d("XMPPChatDemoActivity", "Presence : " + entryPresence);
+
+        }
+        return entries;
+    }
+
+    /**
+     *
+     * @param userCompleteAddress
+     * @return user online or offline.
+     */
+
+    public Type getStatusOfUser(String userCompleteAddress) {
+
+        Roster roster = Roster.getInstanceFor(connection);
+        Collection<RosterEntry> entries = roster.getEntries();
+        for (RosterEntry entry : entries) {
+            if (entry.getUser().equals(userCompleteAddress)) {
+                Presence entryPresence = roster.getPresence(entry.getUser());
+                Presence.Type type = entryPresence.getType();
+                return type;
+            }
+        }
+        return null;
+    }
+
 }

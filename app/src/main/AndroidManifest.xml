@@ -31,6 +31,10 @@
             android:name=".RegistrationActivity"
             android:label="@string/title_activity_registration" >
         </activity>
+        <activity
+            android:name=".XMPPChatDemoActivity"
+            android:label="@string/chat_window" >
+        </activity>
     </application>
 
 </manifest>

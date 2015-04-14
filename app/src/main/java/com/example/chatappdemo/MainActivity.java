@@ -84,6 +84,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 break;
 
             case R.id.btnRegister:
+
+                Intent intent = new Intent(MainActivity.this, RegistrationActivity.class);
+                startActivity(intent);
+                break;
+
+            default:
                 break;
         }
     }
@@ -151,7 +157,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
                 Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                 startActivity(intent);
-               // Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_LONG).show();
             }

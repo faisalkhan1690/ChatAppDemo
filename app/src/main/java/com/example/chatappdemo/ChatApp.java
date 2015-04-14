@@ -9,8 +9,10 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
+import org.jivesoftware.smackx.iqregister.AccountManager;
 
 import java.io.IOException;
+
 
 public class ChatApp {
 
@@ -71,7 +73,7 @@ public class ChatApp {
      * @param password
      * @return true if login successfully else return false
      */
-    public boolean login(final String username, final String password) {
+    public boolean login(String username,String password) {
 
         try {
             connection.login(username, password);
@@ -82,4 +84,20 @@ public class ChatApp {
         }
     }
 
+    /**
+     *Registration on server
+     * @param username
+     * @param password
+     * @return true if login successfully else return false
+     */
+    public boolean Registration(String username,String password) {
+        AccountManager accountManager = AccountManager.getInstance(connection);
+        try {
+            accountManager.createAccount(username,password);
+            return true;
+        } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException | SmackException.NotConnectedException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

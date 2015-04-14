@@ -2,6 +2,7 @@ package com.example.chatappdemo;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -153,8 +154,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
             dialog.dismiss();
             if (result) {
 
-                //test ran faisal
-                Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                startActivity(intent);
+               // Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_LONG).show();
             }

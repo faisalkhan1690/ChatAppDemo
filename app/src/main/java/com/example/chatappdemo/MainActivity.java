@@ -153,7 +153,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             dialog.dismiss();
             if (result) {
 
-                //test
+                //test ran
                 Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_LONG).show();

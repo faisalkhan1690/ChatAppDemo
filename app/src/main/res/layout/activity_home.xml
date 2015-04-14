@@ -15,6 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:padding="10dp"
             android:text="Friend"
             android:textStyle="bold" />
 
@@ -23,6 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:padding="10dp"
             android:text="ChatList"
             android:textStyle="bold" />
     </RelativeLayout>
@@ -37,6 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:padding="10dp"
             android:text="Group"
             android:textStyle="bold" />
 
@@ -45,6 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:padding="10dp"
             android:text="Profile"
             android:textStyle="bold" />
     </RelativeLayout>
@@ -59,6 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:padding="10dp"
             android:text="Logout"
             android:textStyle="bold" />
 

@@ -1,0 +1,21 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="20dp"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="FriendList"
+        android:textStyle="bold"
+        android:padding="10dp"/>
+
+    <ListView
+        android:id="@+id/lvFriendList"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        </ListView>
+
+</LinearLayout>

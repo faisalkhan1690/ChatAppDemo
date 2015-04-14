@@ -153,7 +153,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         protected void onPostExecute(Boolean result) {
             dialog.dismiss();
             if (result) {
-                //deepak
+
                 Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                 startActivity(intent);
                // Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_LONG).show();

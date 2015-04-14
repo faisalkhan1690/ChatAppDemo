@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import java.net.URL;
 
 
@@ -56,8 +55,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction()==MotionEvent.ACTION_UP){
                     etUserName.setError(null);
-                    //hello
-
                 }
                 return false;
             }
@@ -68,7 +65,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction()==MotionEvent.ACTION_UP){
                     etPassword.setError(null);
-
                 }
                 return false;
             }
@@ -85,7 +81,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 if (checkValidation()) {
                     new Login().execute();
                 }
-
                 break;
 
             case R.id.btnRegister:
@@ -177,5 +172,4 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
         return true;
     }
-
 }

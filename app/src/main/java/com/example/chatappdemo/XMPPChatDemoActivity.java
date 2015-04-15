@@ -18,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class XMPPChatDemoActivity extends Activity {
+public class XMPPChatDemoActivity extends Activity implements ChatApp.MessageRcd {
 
 
 	private EditText recipient;
@@ -36,6 +36,7 @@ public class XMPPChatDemoActivity extends Activity {
 	ImageView viewImage;
 	private Object progressDialog;
 	private String memberChat;
+    ChatApp.MessageRcd rcd;
 
 
 	/** Called when the activity is first created. */
@@ -48,8 +49,12 @@ public class XMPPChatDemoActivity extends Activity {
 		viewImage = (ImageView) findViewById(R.id.viewImage);
 
 		app = ChatApp.getInstance();
+        rcd=this;
+        app.initializeListener(rcd);
 
-		recipient = (EditText) this.findViewById(R.id.toET);
+
+
+        recipient = (EditText) this.findViewById(R.id.toET);
 		textMessage = (EditText) this.findViewById(R.id.chatET);
 		listview = (ListView) this.findViewById(R.id.listMessages);
 		setListAdapter();
@@ -111,5 +116,10 @@ public class XMPPChatDemoActivity extends Activity {
 		//app.sendMessage(getText(recipient), "Bye",memberChat);
 
 	}
+    @Override
+    public void onMessageReceived(String message) {
 
+        messages.add(message);
+        setListAdapter();
+    }
 }

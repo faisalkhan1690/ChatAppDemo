@@ -2,13 +2,21 @@ package com.example.chatappdemo;
 
 
 import android.content.Context;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.filter.MessageTypeFilter;
+import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
@@ -29,7 +37,8 @@ public class ChatApp {
     private Context context;
     public AbstractXMPPConnection connection;
     private String username;
-    
+    private MessageRcd msgrcd;
+    private Handler mHandler = new Handler();
 
 
     public String getUsername() {
@@ -184,4 +193,73 @@ public class ChatApp {
             }
         }
     }
+
+
+    /**
+     * Called by Settings dialog when a connection is establised with the XMPP
+     * server
+     *
+     * @param connection
+     */
+    public void setConnection(XMPPTCPConnection connection) {
+        this.connection = connection;
+        if (connection != null) {
+            // Add a packet listener to get messages sent to us
+            //PacketFilter filter = new MessageTypeFilter(Message.Type.chat);
+            Log.i("test",MessageTypeFilter.class.getSimpleName());
+            /*connection.addPacketListener(new PacketListener() {
+                @Override
+                public void processPacket(Packet packet) {
+                    final Message message = (Message) packet;
+                    if (message.getBody() != null) {
+                       // String fromName = StringUtils.parseBareAddress(message
+                        //        .getFrom());
+                        String fromName = message.getFrom();
+                        Log.i("XMPPChatDemoActivity", "Text Recieved "
+                                + message.getBody() + " from " + fromName);
+                        //messages.add(fromName + ":");
+                        message.setStanzaId(fromName +":");
+                        //messages.add(message.getBody());
+                        message.setStanzaId(message.getBody());
+                        // Add the incoming message to the list view
+                        playBeep();
+                        mHandler.post(new Runnable() {
+                            public void run() {
+                                // TODO check split
+                                msgrcd.onMessageReceived((message.getFrom()
+                                        .split("@"))[0].toString()
+                                        + ":"
+                                        + message.getBody());
+                            }
+                        });
+                    }
+                }
+            }, filter);*/
+        }
+    }
+
+    /**
+     * Plays device's default notification sound
+     */
+    public void playBeep() {
+
+        try {
+            Uri notification = RingtoneManager
+                    .getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone r = RingtoneManager.getRingtone(context, notification);
+            r.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public interface MessageRcd {
+        public void onMessageReceived(String message);
+    }
+
+    public void initializeListener(MessageRcd rcd) {
+        this.msgrcd = rcd;
+    }
+
+
 }

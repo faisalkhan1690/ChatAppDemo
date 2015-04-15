@@ -10,5 +10,8 @@
     <string name="create_account">Create Account</string>
     <string name="enter_password">Enter Password</string>
     <string name="chat_window">Chat Window</string>
+    <string name="title_activity_send_friend">SendFriendActivity</string>
+    <string name="title_activity_pending_friend">PendingFriendActivity</string>
+    <string name="title_activity_sent_friend">SentFriendActivity</string>
 
 </resources>

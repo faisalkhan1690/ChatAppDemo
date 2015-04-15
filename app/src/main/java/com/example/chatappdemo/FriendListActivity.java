@@ -9,6 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Switch;
+import android.widget.TextView;
 
 import com.example.chatappdemo.Adapter.FriendListAdapter;
 
@@ -20,17 +22,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 
-public class FriendListActivity extends Activity {
+public class FriendListActivity extends Activity implements View.OnClickListener {
     private ListView lvFriendList;
     private ChatApp chatApp;
     private ArrayList<RosterEntry> friendList = new ArrayList<RosterEntry>();
     private FriendListAdapter friendListAdapter;
+    private TextView tvSendFriend;
+    private  TextView tvPendingFriend;
+    private TextView tvSentFriend;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_list);
+
+        tvSendFriend = (TextView) findViewById(R.id.tvSendFriend);
+        tvPendingFriend = (TextView) findViewById(R.id.tvPendingFriend);
+        tvSentFriend = (TextView) findViewById(R.id.tvSentFriend);
 
         chatApp = ChatApp.getInstance();
         Roster roster = Roster.getInstanceFor(chatApp.connection);
@@ -62,6 +71,15 @@ public class FriendListActivity extends Activity {
             }
         });
 
+
+        /**
+         * click on tab button
+         */
+
+        tvSendFriend.setOnClickListener(this);
+        tvPendingFriend.setOnClickListener(this);
+        tvSentFriend.setOnClickListener(this);
+
     }
 
 
@@ -85,5 +103,34 @@ public class FriendListActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tvSendFriend: {
+                Intent intent = new Intent(FriendListActivity.this, SendFriendActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+            break;
+            case R.id.tvPendingFriend: {
+
+                Intent intent = new Intent(FriendListActivity.this, PendingFriendActivity.class);
+                startActivity(intent);
+                finish();
+            }
+            case R.id.tvSentFriend: {
+
+                Intent intent = new Intent(FriendListActivity.this, FriendRequestSentActivity.class);
+                startActivity(intent);
+                finish();
+            }
+            break;
+
+            default:
+                break;
+        }
     }
 }

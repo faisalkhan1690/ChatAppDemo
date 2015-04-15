@@ -26,7 +26,7 @@
         <activity
             android:name=".FriendListActivity"
             android:label="@string/title_activity_friend_list" >
-            </activity>
+        </activity>
         <activity
             android:name=".RegistrationActivity"
             android:label="@string/title_activity_registration" >
@@ -34,6 +34,18 @@
         <activity
             android:name=".XMPPChatDemoActivity"
             android:label="@string/chat_window" >
+        </activity>
+        <activity
+            android:name=".SendFriendActivity"
+            android:label="@string/title_activity_send_friend" >
+        </activity>
+        <activity
+            android:name=".PendingFriendActivity"
+            android:label="@string/title_activity_pending_friend" >
+        </activity>
+        <activity
+            android:name=".FriendRequestSentActivity"
+            android:label="@string/title_activity_sent_friend" >
         </activity>
     </application>
 

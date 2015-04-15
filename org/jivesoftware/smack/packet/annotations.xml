@@ -1,0 +1,5 @@
+<root>
+    <item name='org.jivesoftware.smack.packet.Message'>
+        <annotation name='java.lang.annotation.Deprecated' />
+    </item>
+</root>

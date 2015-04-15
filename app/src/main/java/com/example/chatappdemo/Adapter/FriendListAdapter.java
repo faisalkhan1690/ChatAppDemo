@@ -72,7 +72,7 @@ public class FriendListAdapter extends BaseAdapter {
 		}
 		app = ChatApp.getInstance();
 		if (friendList.get(position) != null) {
-			holder.tvFriendName.setText("" + friendList.get(position).getName());
+			holder.tvFriendName.setText("" + friendList.get(position).getUser());
 		}
        // roster.getPresence(friendList.get(position).getUser());
         Presence entryPresence = roster.getPresence(friendList.get(position).getUser());

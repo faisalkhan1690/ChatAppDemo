@@ -1,0 +1,5 @@
+<root>
+    <item name='org.jivesoftware.smack.filter.StanzaFilter'>
+        <annotation name='java.lang.annotation.Deprecated' />
+    </item>
+</root>

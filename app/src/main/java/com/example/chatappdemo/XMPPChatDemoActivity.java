@@ -65,10 +65,10 @@ public class XMPPChatDemoActivity extends Activity implements ChatApp.MessageRcd
 			//updateUserStatus();
 			if("unavailable".equals(app.getStatusOfUser(user).name())){
                 txtStatus.setText("Offline");
-                ivStatus.setImageResource(R.drawable.ic_red_offline);
+                ivStatus.setImageDrawable(getResources().getDrawable(R.drawable.ic_red_offline));
             }else{
                 txtStatus.setText("Online");
-                ivStatus.setBackgroundResource(R.drawable.ic_green_online);
+                ivStatus.setImageDrawable(getResources().getDrawable(R.drawable.ic_green_online));
             }
 			memberChat = getIntent().getExtras().getString("memberChat");
 		}

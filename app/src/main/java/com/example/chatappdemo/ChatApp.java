@@ -12,12 +12,16 @@ import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
@@ -30,10 +34,10 @@ import java.util.Collection;
 
 public class ChatApp {
 
-	private static ChatApp instance = null;
-	public static final String HOST = "192.168.1.64";
-	public static final int PORT = 5222;
-	public static final String SERVICE = "xmpp.deepco.com.br";
+    private static ChatApp instance = null;
+    public static final String HOST = "192.168.1.64";
+    public static final int PORT = 5222;
+    public static final String SERVICE = "xmpp.deepco.com.br";
     private Context context;
     public AbstractXMPPConnection connection;
     private String username;
@@ -48,16 +52,16 @@ public class ChatApp {
     /*
         private constructor for making sin
          */
-	private ChatApp() {
+    private ChatApp() {
 
-	}
+    }
 
-	public static ChatApp getInstance() {
-		if (instance == null) {
-			instance = new ChatApp();
-		}
-		return instance;
-	}
+    public static ChatApp getInstance() {
+        if (instance == null) {
+            instance = new ChatApp();
+        }
+        return instance;
+    }
 
 
     /**
@@ -99,6 +103,9 @@ public class ChatApp {
         try {
             connection.login(username, password);
             this.username = connection.getUser();
+            Presence presence = new Presence(Presence.Type.available);
+            connection.sendPacket(presence);
+            setConnection(connection);
             return true;
         } catch (SmackException | IOException | XMPPException e) {
             e.printStackTrace();
@@ -201,24 +208,22 @@ public class ChatApp {
      *
      * @param connection
      */
-    public void setConnection(XMPPTCPConnection connection) {
+    @SuppressWarnings("deprecation")
+    public void setConnection(AbstractXMPPConnection connection) {
         this.connection = connection;
         if (connection != null) {
-            // Add a packet listener to get messages sent to us
-            //PacketFilter filter = new MessageTypeFilter(Message.Type.chat);
-            Log.i("test",MessageTypeFilter.class.getSimpleName());
-            /*connection.addPacketListener(new PacketListener() {
+
+            StanzaFilter filter = new StanzaTypeFilter(Message.class);
+            connection.addPacketListener(new StanzaListener() {
                 @Override
-                public void processPacket(Packet packet) {
+                public void processPacket(Stanza packet) throws SmackException.NotConnectedException {
                     final Message message = (Message) packet;
                     if (message.getBody() != null) {
-                       // String fromName = StringUtils.parseBareAddress(message
-                        //        .getFrom());
                         String fromName = message.getFrom();
                         Log.i("XMPPChatDemoActivity", "Text Recieved "
                                 + message.getBody() + " from " + fromName);
                         //messages.add(fromName + ":");
-                        message.setStanzaId(fromName +":");
+                        message.setStanzaId(fromName + ":");
                         //messages.add(message.getBody());
                         message.setStanzaId(message.getBody());
                         // Add the incoming message to the list view
@@ -233,8 +238,10 @@ public class ChatApp {
                             }
                         });
                     }
+
                 }
-            }, filter);*/
+            }, filter);
+
         }
     }
 

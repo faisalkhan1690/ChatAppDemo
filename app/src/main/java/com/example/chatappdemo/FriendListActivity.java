@@ -1,10 +1,13 @@
 package com.example.chatappdemo;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.chatappdemo.Adapter.FriendListAdapter;
@@ -46,9 +49,18 @@ public class FriendListActivity extends Activity {
 
         }
 
-        lvFriendList = (ListView)findViewById(R.id.lvFriendList);
-        friendListAdapter = new FriendListAdapter(FriendListActivity.this,	friendList, roster);
+        lvFriendList = (ListView) findViewById(R.id.lvFriendList);
+        friendListAdapter = new FriendListAdapter(FriendListActivity.this, friendList, roster);
         lvFriendList.setAdapter(friendListAdapter);
+
+        lvFriendList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(FriendListActivity.this, XMPPChatDemoActivity.class);
+                intent.putExtra("email", friendList.get(position).getUser().toString());
+                startActivity(intent);
+            }
+        });
 
     }
 

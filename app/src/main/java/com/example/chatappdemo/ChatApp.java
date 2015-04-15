@@ -8,6 +8,7 @@ import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
@@ -27,11 +28,17 @@ public class ChatApp {
 	public static final String SERVICE = "xmpp.deepco.com.br";
     private Context context;
     public AbstractXMPPConnection connection;
+    private String username;
+    
 
+
+    public String getUsername() {
+        return username;
+    }
 
     /*
-    private constructor for making sin
-     */
+        private constructor for making sin
+         */
 	private ChatApp() {
 
 	}
@@ -82,6 +89,7 @@ public class ChatApp {
 
         try {
             connection.login(username, password);
+            this.username = connection.getUser();
             return true;
         } catch (SmackException | IOException | XMPPException e) {
             e.printStackTrace();
@@ -158,4 +166,22 @@ public class ChatApp {
         return null;
     }
 
+    /**
+     * Send message to the specified address
+     *
+     * @param to
+     * @param message
+     */
+    public void sendMessage(String to, String message, String memberChat) {
+        Message msg = null;
+        msg = new Message(to, Message.Type.chat);
+        msg.setBody(message);
+        if (connection != null) {
+            try {
+                connection.sendStanza(msg);
+            } catch (SmackException.NotConnectedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

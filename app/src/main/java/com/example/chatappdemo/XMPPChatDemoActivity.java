@@ -76,8 +76,8 @@ public class XMPPChatDemoActivity extends Activity {
 					textMessage.setError("Can't send empty message");
 					return;
 				}
-				//app.sendMessage(getText(recipient), getText(textMessage),memberChat);
-				//messages.add(app.getUsername() + ":" + getText(textMessage));
+				app.sendMessage(getText(recipient), getText(textMessage),memberChat);
+				messages.add(app.getUsername() + ":" + getText(textMessage));
 				textMessage.setText("");
 			}
 		});

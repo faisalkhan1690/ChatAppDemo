@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 public class HomeActivity extends Activity {
     private TextView tvFriend;
+    private TextView tvGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +22,14 @@ public class HomeActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, FriendListActivity.class);
+                startActivity(intent);
+            }
+        });
+        tvGroup = (TextView)findViewById(R.id.tvGroup);
+        tvGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, GroupActivity.class);
                 startActivity(intent);
             }
         });

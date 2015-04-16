@@ -15,5 +15,6 @@
     <string name="title_activity_sent_friend">SentFriendActivity</string>
     <string name="friends_request">Friend Requests</string>
     <string name="addfriend">Add Friend</string>
+    <string name="title_group">create Group</string>
 
 </resources>

@@ -43,6 +43,11 @@
             android:name=".ReceiveFriendRequestActivity"
             android:label="@string/title_activity_pending_friend" >
         </activity>
+        <activity
+            android:name=".GroupActivity"
+            android:label="@string/title_group" >
+        </activity>
+
     </application>
 
 </manifest>

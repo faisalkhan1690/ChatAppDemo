@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 
 public class SendFriendActivity extends Activity implements View.OnClickListener {
@@ -30,9 +31,20 @@ public class SendFriendActivity extends Activity implements View.OnClickListener
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btnSend:
+                if(sendFriendRequest()){
+                    Toast.makeText(getApplicationContext(),"Send",Toast.LENGTH_LONG).show();
+                }else {
+                    Toast.makeText(getApplicationContext(),"Not Send try again",Toast.LENGTH_LONG).show();
+                }
+
                 break;
             default:
                 break;
         }
+    }
+
+    private boolean  sendFriendRequest() {
+
+        return false;
     }
 }

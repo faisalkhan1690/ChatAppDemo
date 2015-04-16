@@ -27,9 +27,8 @@ public class FriendListActivity extends Activity implements View.OnClickListener
     private ChatApp chatApp;
     private ArrayList<RosterEntry> friendList = new ArrayList<RosterEntry>();
     private FriendListAdapter friendListAdapter;
-    private TextView tvSendFriend;
-    private  TextView tvPendingFriend;
-    private TextView tvSentFriend;
+    private TextView tvAddFriend;
+    private TextView tvFriendRequest;
 
 
     @Override
@@ -37,23 +36,14 @@ public class FriendListActivity extends Activity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_list);
 
-        tvSendFriend = (TextView) findViewById(R.id.tvSendFriend);
-        tvPendingFriend = (TextView) findViewById(R.id.tvPendingFriend);
-        tvSentFriend = (TextView) findViewById(R.id.tvSentFriend);
+        tvAddFriend = (TextView) findViewById(R.id.tvAddFriend);
+        tvFriendRequest = (TextView) findViewById(R.id.tvFriendsRequest);
 
         chatApp = ChatApp.getInstance();
         Roster roster = Roster.getInstanceFor(chatApp.connection);
 
         Collection<RosterEntry> entries = roster.getEntries();
         for (RosterEntry entry : entries) {
-            //System.out.println("Here: " + entry);
-          /*  System.out.println("Here: " +  roster.getPresence(entry.getUser()));
-            Log.i("userPresence", ""+roster.getPresence(entry.getUser()));
-            Presence entryPresence = roster.getPresence(entry.getUser());
-            Presence.Type type = entryPresence.getType();
-            System.out.println("type: " +  type);
-            Log.i("userPresence", ""+roster.getPresence(entry.getUser()));*/
-            //roster.getPresence(entry.getUser());
             friendList.add(entry);
 
         }
@@ -76,55 +66,25 @@ public class FriendListActivity extends Activity implements View.OnClickListener
          * click on tab button
          */
 
-        tvSendFriend.setOnClickListener(this);
-        tvPendingFriend.setOnClickListener(this);
-        tvSentFriend.setOnClickListener(this);
+        tvAddFriend.setOnClickListener(this);
+        tvFriendRequest.setOnClickListener(this);
 
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_friend_list, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tvSendFriend: {
+            case R.id.tvAddFriend: {
                 Intent intent = new Intent(FriendListActivity.this, SendFriendActivity.class);
                 startActivity(intent);
             }
 
             break;
-            case R.id.tvPendingFriend: {
+            case R.id.tvFriendsRequest: {
 
                 Intent intent = new Intent(FriendListActivity.this, PendingFriendActivity.class);
                 startActivity(intent);
             }
-            case R.id.tvSentFriend: {
-
-                Intent intent = new Intent(FriendListActivity.this, FriendRequestSentActivity.class);
-                startActivity(intent);
-            }
-            break;
 
             default:
                 break;

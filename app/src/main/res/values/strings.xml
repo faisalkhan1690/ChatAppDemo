@@ -13,5 +13,7 @@
     <string name="title_activity_send_friend">SendFriendActivity</string>
     <string name="title_activity_pending_friend">PendingFriendActivity</string>
     <string name="title_activity_sent_friend">SentFriendActivity</string>
+    <string name="friends_request">Friend Requests</string>
+    <string name="addfriend">Add Friend</string>
 
 </resources>

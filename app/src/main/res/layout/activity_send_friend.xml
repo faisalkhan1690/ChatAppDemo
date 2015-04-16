@@ -6,7 +6,23 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.example.chatappdemo.SendFriendActivity">
 
-    <TextView android:text="Send Friend request" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter id of friend"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:id="@+id/etNameOfFriend"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etNameOfFriend"
+        android:text="Send Friend Request"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:id="@+id/btnSend"/>
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_below="@+id/btnSend"
+        android:id="@+id/lvPendingRequest"/>
 </RelativeLayout>

@@ -2,43 +2,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:padding="20dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="20dp">
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <TextView
+            android:id="@+id/tvAddFriend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SendFriend"
             android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
             android:padding="5dp"
-            android:id="@+id/tvSendFriend" />
+            android:text="@string/addfriend" />
         <TextView
+            android:id="@+id/tvFriendsRequest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PendingFriend"
-            android:layout_centerInParent="true"
-            android:layout_centerVertical="true"
-            android:padding="5dp"
-            android:id="@+id/tvPendingFriend"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SentFriend"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
             android:padding="5dp"
-            android:id="@+id/tvSentFriend"/>
+            android:text="@string/friends_request"/>
+
         </RelativeLayout>
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:padding="10dp"
         android:text="FriendList"
-        android:textStyle="bold"
-        android:padding="10dp"/>
+        android:textStyle="bold" />
 
     <ListView
         android:id="@+id/lvFriendList"

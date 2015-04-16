@@ -43,10 +43,6 @@
             android:name=".PendingFriendActivity"
             android:label="@string/title_activity_pending_friend" >
         </activity>
-        <activity
-            android:name=".FriendRequestSentActivity"
-            android:label="@string/title_activity_sent_friend" >
-        </activity>
     </application>
 
 </manifest>

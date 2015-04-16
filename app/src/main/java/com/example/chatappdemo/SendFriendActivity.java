@@ -2,38 +2,37 @@ package com.example.chatappdemo;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
 
 
-public class SendFriendActivity extends Activity {
+public class SendFriendActivity extends Activity implements View.OnClickListener {
+
+    private EditText etNameOfFriend;
+    private Button btnSend;
+    private ListView lvPendingRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_friend);
-    }
 
+        etNameOfFriend=(EditText)findViewById(R.id.etNameOfFriend);
+        btnSend=(Button)findViewById(R.id.btnSend);
+        lvPendingRequest=(ListView)findViewById(R.id.lvPendingRequest);
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_send_friend, menu);
-        return true;
+        btnSend.setOnClickListener(this);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.btnSend:
+                break;
+            default:
+                break;
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }

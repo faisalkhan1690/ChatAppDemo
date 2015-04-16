@@ -36,11 +36,11 @@
             android:label="@string/chat_window" >
         </activity>
         <activity
-            android:name=".SendFriendActivity"
+            android:name=".SendFriendRequestActivity"
             android:label="@string/title_activity_send_friend" >
         </activity>
         <activity
-            android:name=".PendingFriendActivity"
+            android:name=".ReceiveFriendRequestActivity"
             android:label="@string/title_activity_pending_friend" >
         </activity>
     </application>

@@ -16,7 +16,7 @@ import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.util.StringUtils;
 
 
-public class SendFriendActivity extends Activity implements View.OnClickListener {
+public class SendFriendRequestActivity extends Activity implements View.OnClickListener {
 
     private EditText etNameOfFriend;
     private Button btnSend;

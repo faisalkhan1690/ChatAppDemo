@@ -3,18 +3,13 @@ package com.example.chatappdemo;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.chatappdemo.Adapter.FriendListAdapter;
 
-import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 
@@ -75,14 +70,14 @@ public class FriendListActivity extends Activity implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tvAddFriend: {
-                Intent intent = new Intent(FriendListActivity.this, SendFriendActivity.class);
+                Intent intent = new Intent(FriendListActivity.this, SendFriendRequestActivity.class);
                 startActivity(intent);
             }
 
             break;
             case R.id.tvFriendsRequest: {
 
-                Intent intent = new Intent(FriendListActivity.this, PendingFriendActivity.class);
+                Intent intent = new Intent(FriendListActivity.this, ReceiveFriendRequestActivity.class);
                 startActivity(intent);
             }
 

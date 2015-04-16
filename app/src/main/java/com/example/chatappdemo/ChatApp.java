@@ -29,7 +29,9 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.iqregister.AccountManager;
 import org.jivesoftware.smack.packet.Presence.Type;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 
 public class ChatApp {
@@ -296,4 +298,55 @@ public class ChatApp {
         }
     }
 
+
+    public List<RosterEntry> getAllFriendRequests(){
+        List<RosterEntry> mFrienRequests = new ArrayList<RosterEntry>();
+        List<RosterEntry> mFriendlist;
+        Roster roster = Roster.getInstanceFor(instance.connection);
+        mFriendlist=new ArrayList<RosterEntry>(instance.getFriendList());
+
+
+        for (RosterEntry item : mFriendlist) {
+            Presence entryPresence = roster.getPresence(item.getUser());
+            if (!item.getType().name().equals("")) {
+                if (item.getType().name().equalsIgnoreCase("from")) {
+                    mFrienRequests.add(item);
+                }
+            }
+        }
+        return mFrienRequests;
+    }
+
+
+    public boolean acceptFriendRequest(String mFriendName){
+
+        Roster roster = Roster.getInstanceFor(instance.connection);
+
+        try {
+            roster.createEntry(mFriendName, mFriendName, null);
+            Presence subscribed = new Presence(Presence.Type.subscribed);
+            subscribed.setTo(mFriendName);
+            instance.connection.sendStanza(subscribed);
+            return true;
+        } catch (SmackException.NotLoggedInException | SmackException.NoResponseException |
+                XMPPException.XMPPErrorException | SmackException.NotConnectedException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean rejectFriendRequest(String mFriendName){
+        Roster roster = Roster.getInstanceFor(instance.connection);
+        try {
+            roster.createEntry(mFriendName, mFriendName, null);
+            Presence unsubscribed = new Presence(Presence.Type.unsubscribed);
+            unsubscribed.setTo(mFriendName);
+            instance.connection.sendStanza(unsubscribed);
+            return true;
+        }catch (SmackException.NotLoggedInException | SmackException.NoResponseException |
+                XMPPException.XMPPErrorException | SmackException.NotConnectedException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

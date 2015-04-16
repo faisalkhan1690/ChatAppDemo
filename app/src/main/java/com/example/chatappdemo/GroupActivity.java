@@ -9,15 +9,36 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smack.roster.RosterEntry;
+import org.jivesoftware.smack.roster.RosterGroup;
+import org.jivesoftware.smackx.muc.DiscussionHistory;
+import org.jivesoftware.smackx.muc.MultiUserChat;
+import org.jivesoftware.smackx.muc.MultiUserChatManager;
+import org.jivesoftware.smackx.xdata.Form;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
+
+import java.util.Collection;
+
 
 public class GroupActivity extends Activity {
     private EditText etGroupName;
     private Button btnCreateGroup;
+    private ChatApp chatApp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
+
+        chatApp = ChatApp.getInstance();
+
+        //Roster roster = Roster.getInstanceFor(chatApp.connection);
+        //Collection<RosterGroup> groups = roster.getGroups();
+
 
         etGroupName = (EditText)findViewById(R.id.etGroupName);
         btnCreateGroup = (Button)findViewById(R.id.btnCreateGroup);
@@ -27,9 +48,39 @@ public class GroupActivity extends Activity {
         btnCreateGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("Group Name",""+etGroupName.getText().toString());
+                //Log.i("Group Name",""+etGroupName.getText().toString());
+                createGroup();
             }
         });
+    }
+
+    private void createGroup() {
+        //http://www.igniterealtime.org/builds/smack/docs/latest/documentation/extensions/muc.html
+
+        // Get the MultiUserChatManager
+        MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(chatApp.connection);
+        // Get a MultiUserChat using MultiUserChatManager
+        MultiUserChat muc = manager.getMultiUserChat("myroom"+"@conference."+ChatApp.SERVICE);
+        // Create the room
+        try {
+            muc.create("vinay");
+            muc.invite("vinay@xmpp.deepco.com.br/Good", "Meet me in this excellent room");
+        } catch (XMPPException.XMPPErrorException e) {
+            e.printStackTrace();
+        } catch (SmackException e) {
+            e.printStackTrace();
+        }
+        // Send an empty room configuration form which indicates that we want
+        // an instant room
+        try {
+            muc.sendConfigurationForm(new Form(DataForm.Type.submit));
+        } catch (SmackException.NoResponseException e) {
+            e.printStackTrace();
+        } catch (XMPPException.XMPPErrorException e) {
+            e.printStackTrace();
+        } catch (SmackException.NotConnectedException e) {
+            e.printStackTrace();
+        }
     }
 
 

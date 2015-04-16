@@ -269,4 +269,31 @@ public class ChatApp {
     }
 
 
+    /**
+     * For Friend Request send
+     * @param friendId
+     * @return true if success else failed
+     */
+    public boolean sendFriendRequest(String friendId){
+        Roster roster = Roster.getInstanceFor(instance.connection);
+
+        if (!roster.contains(friendId)) {
+
+            try {
+                roster.createEntry(friendId, friendId, null);
+                Presence subscribe = new Presence(Presence.Type.subscribe);
+                subscribe.setTo(friendId);
+                instance.connection.sendStanza(subscribe);
+                return true;
+
+            } catch (XMPPException.XMPPErrorException | SmackException.NotLoggedInException |
+                    SmackException.NoResponseException | SmackException.NotConnectedException e) {
+                e.printStackTrace();
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
 }

@@ -111,7 +111,6 @@ public class FriendListActivity extends Activity implements View.OnClickListener
             case R.id.tvSendFriend: {
                 Intent intent = new Intent(FriendListActivity.this, SendFriendActivity.class);
                 startActivity(intent);
-                finish();
             }
 
             break;
@@ -119,13 +118,11 @@ public class FriendListActivity extends Activity implements View.OnClickListener
 
                 Intent intent = new Intent(FriendListActivity.this, PendingFriendActivity.class);
                 startActivity(intent);
-                finish();
             }
             case R.id.tvSentFriend: {
 
                 Intent intent = new Intent(FriendListActivity.this, FriendRequestSentActivity.class);
                 startActivity(intent);
-                finish();
             }
             break;
 

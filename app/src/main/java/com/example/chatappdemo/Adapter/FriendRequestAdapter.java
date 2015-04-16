@@ -78,7 +78,6 @@ public class FriendRequestAdapter extends BaseAdapter {
 				} else {
 					Toast.makeText(context, "Accept Friend Request fail", Toast.LENGTH_SHORT).show();
 				}
-
 			}
 
 			private boolean AcceptFriendRequestSubscribed(String mFriendName) {
@@ -97,7 +96,6 @@ public class FriendRequestAdapter extends BaseAdapter {
 				} else {
 					Toast.makeText(context, "Denny Friend Request fail", Toast.LENGTH_SHORT).show();
 				}
-
 			}
 
 			private boolean RejectFriendRequest(String mFriendName) {

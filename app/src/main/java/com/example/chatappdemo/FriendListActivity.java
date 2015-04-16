@@ -7,20 +7,17 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import com.example.chatappdemo.Adapter.FriendListAdapter;
 
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
-
 import java.util.ArrayList;
-import java.util.Collection;
 
 
 public class FriendListActivity extends Activity implements View.OnClickListener {
     private ListView lvFriendList;
     private ChatApp chatApp;
-    private ArrayList<RosterEntry> friendList = new ArrayList<RosterEntry>();
+    private ArrayList<RosterEntry> friendList;
     private FriendListAdapter friendListAdapter;
     private TextView tvAddFriend;
     private TextView tvFriendRequest;
@@ -37,11 +34,7 @@ public class FriendListActivity extends Activity implements View.OnClickListener
         chatApp = ChatApp.getInstance();
         Roster roster = Roster.getInstanceFor(chatApp.connection);
 
-        Collection<RosterEntry> entries = roster.getEntries();
-        for (RosterEntry entry : entries) {
-            friendList.add(entry);
-
-        }
+        friendList=chatApp.getAllFriendList();
 
         lvFriendList = (ListView) findViewById(R.id.lvFriendList);
         friendListAdapter = new FriendListAdapter(FriendListActivity.this, friendList, roster);

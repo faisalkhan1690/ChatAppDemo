@@ -284,7 +284,7 @@ public class ChatApp {
             try {
                 roster.createEntry(friendId, friendId, null);
                 Presence subscribe = new Presence(Presence.Type.subscribe);
-                subscribe.setTo(friendId);
+                subscribe.setFrom(friendId);
                 instance.connection.sendStanza(subscribe);
                 return true;
 
@@ -300,21 +300,21 @@ public class ChatApp {
 
 
     public List<RosterEntry> getAllFriendRequests(){
-        List<RosterEntry> mFrienRequests = new ArrayList<RosterEntry>();
-        List<RosterEntry> mFriendlist;
+        List<RosterEntry> mFriendRequests = new ArrayList<RosterEntry>();
+        List<RosterEntry> mFriendList;
         Roster roster = Roster.getInstanceFor(instance.connection);
-        mFriendlist=new ArrayList<RosterEntry>(instance.getFriendList());
+        mFriendList=new ArrayList<RosterEntry>(instance.getFriendList());
 
 
-        for (RosterEntry item : mFriendlist) {
+        for (RosterEntry item : mFriendList) {
             Presence entryPresence = roster.getPresence(item.getUser());
             if (!item.getType().name().equals("")) {
-                if (item.getType().name().equalsIgnoreCase("from")) {
-                    mFrienRequests.add(item);
+                if (item.getType().name().equalsIgnoreCase("both")) {
+                    mFriendRequests.add(item);
                 }
             }
         }
-        return mFrienRequests;
+        return mFriendRequests;
     }
 
 
@@ -324,7 +324,7 @@ public class ChatApp {
 
         try {
             roster.createEntry(mFriendName, mFriendName, null);
-            Presence subscribed = new Presence(Presence.Type.subscribed);
+            Presence subscribed = new Presence(Type.subscribed);
             subscribed.setTo(mFriendName);
             instance.connection.sendStanza(subscribed);
             return true;
@@ -339,7 +339,7 @@ public class ChatApp {
         Roster roster = Roster.getInstanceFor(instance.connection);
         try {
             roster.createEntry(mFriendName, mFriendName, null);
-            Presence unsubscribed = new Presence(Presence.Type.unsubscribed);
+            Presence unsubscribed = new Presence(Type.unsubscribe);
             unsubscribed.setTo(mFriendName);
             instance.connection.sendStanza(unsubscribed);
             return true;
@@ -348,5 +348,16 @@ public class ChatApp {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public ArrayList<RosterEntry> getAllFriendList(){
+        ArrayList<RosterEntry> friendList = new ArrayList<RosterEntry>();
+        Roster roster = Roster.getInstanceFor(instance.connection);
+
+        Collection<RosterEntry> entries = roster.getEntries();
+        for (RosterEntry entry : entries) {
+            friendList.add(entry);
+        }
+        return friendList;
     }
 }

@@ -18,14 +18,12 @@ import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
-import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.iqregister.AccountManager;
@@ -135,7 +133,36 @@ public class ChatApp {
     }
 
 
+    /**
+     * Return Friend list
+     *
+     * @return
+     */
+    public Collection<RosterEntry> getFriendList() {
+        Roster roster = Roster.getInstanceFor(connection);
+        Collection<RosterEntry> entries = roster.getEntries();
+        for (RosterEntry entry : entries) {
+            Log.d("XMPPChatDemoActivity",
+                    "--------------------------------------");
+            Log.d("XMPPChatDemoActivity", "RosterEntry " + entry);
+            Log.d("XMPPChatDemoActivity", "User: " + entry.getUser());
+            Log.d("XMPPChatDemoActivity", "Name: " + entry.getName());
+            Log.d("XMPPChatDemoActivity", "Status: " + entry.getStatus());
+            Log.d("XMPPChatDemoActivity", "Type: " + entry.getType());
+            Presence entryPresence = roster.getPresence(entry.getUser());
 
+            Log.d("XMPPChatDemoActivity",
+                    "Presence Status: " + entryPresence.getStatus());
+            Log.d("XMPPChatDemoActivity",
+                    "Presence Type: " + entryPresence.getType());
+            Presence.Type type = entryPresence.getType();
+            if (type == Presence.Type.available)
+                Log.d("XMPPChatDemoActivity", "Presence AVIALABLE");
+            Log.d("XMPPChatDemoActivity", "Presence : " + entryPresence);
+
+        }
+        return entries;
+    }
 
     /**
      *
@@ -235,20 +262,6 @@ public class ChatApp {
         }
     }
 
-    public List<RosterEntry> getAllFriendRequestsSend() {
-        List<RosterEntry> mFriendRequests = new ArrayList<RosterEntry>();
-        Roster roster = Roster.getInstanceFor(instance.connection);
-
-        Collection<RosterEntry> entries = roster.getEntries();
-        for (RosterEntry entry : entries) {
-            if(entry.getType().toString().equals("to") && entry.getStatus()==null){
-                mFriendRequests.add(entry);
-            }
-        }
-        return mFriendRequests;
-    }
-
-
     public interface MessageRcd {
         public void onMessageReceived(String message);
     }
@@ -272,7 +285,6 @@ public class ChatApp {
                 roster.createEntry(friendId, friendId, null);
                 Presence subscribe = new Presence(Presence.Type.subscribe);
                 subscribe.setTo(friendId);
-                subscribe.setFrom(friendId);
                 instance.connection.sendStanza(subscribe);
                 return true;
 
@@ -287,33 +299,22 @@ public class ChatApp {
     }
 
 
-    public List<RosterEntry> getAllFriendRequestsReceive(){
-        List<RosterEntry> mFriendRequests = new ArrayList<RosterEntry>();
+    public List<RosterEntry> getAllFriendRequests(){
+        List<RosterEntry> mFrienRequests = new ArrayList<RosterEntry>();
+        List<RosterEntry> mFriendlist;
         Roster roster = Roster.getInstanceFor(instance.connection);
+        mFriendlist=new ArrayList<RosterEntry>(instance.getFriendList());
 
-        Collection<RosterEntry> entries = roster.getEntries();
-        for (RosterEntry entry : entries) {
-            if(entry.getType().toString().equals("from") && entry.getName()==null){
-                mFriendRequests.add(entry);
+
+        for (RosterEntry item : mFriendlist) {
+            Presence entryPresence = roster.getPresence(item.getUser());
+            if (!item.getType().name().equals("")) {
+                if (item.getType().name().equalsIgnoreCase("from")) {
+                    mFrienRequests.add(item);
+                }
             }
         }
-        return mFriendRequests;
-    }
-
-
-    /**
-     * Return Friend list
-     *
-     * @return
-     */
-    public Collection<RosterEntry> getFriendList() {
-        Roster roster = Roster.getInstanceFor(connection);
-        Collection<RosterEntry> entries = roster.getEntries();
-        for (RosterEntry entry : entries) {
-            Presence entryPresence = roster.getPresence(entry.getUser());
-            Presence.Type type = entryPresence.getType();
-        }
-        return entries;
+        return mFrienRequests;
     }
 
 
@@ -323,7 +324,7 @@ public class ChatApp {
 
         try {
             roster.createEntry(mFriendName, mFriendName, null);
-            Presence subscribed = new Presence(Type.subscribed);
+            Presence subscribed = new Presence(Presence.Type.subscribed);
             subscribed.setTo(mFriendName);
             instance.connection.sendStanza(subscribed);
             return true;
@@ -336,39 +337,101 @@ public class ChatApp {
 
     public boolean rejectFriendRequest(String mFriendName){
         Roster roster = Roster.getInstanceFor(instance.connection);
-       try {
-           roster.createEntry(mFriendName, mFriendName, null);
-           Presence unsubscribe = new Presence(Type.unsubscribe);
-           unsubscribe.setTo(mFriendName);
-           unsubscribe.setFrom(mFriendName);
-           instance.connection.sendStanza(unsubscribe);
-           return true;
-
-        }catch (SmackException.NotLoggedInException | SmackException.NoResponseException |
-                XMPPException.XMPPErrorException | SmackException.NotConnectedException e) {
-            e.printStackTrace();
-            return false;
-        }
-
-    }
-
-
-    public boolean cancelFriendRequest(String mFriendName) {
-        Roster roster = Roster.getInstanceFor(instance.connection);
         try {
             roster.createEntry(mFriendName, mFriendName, null);
-            Presence unsubscribe = new Presence(Type.unsubscribe);
-            unsubscribe.setTo(mFriendName);
-            unsubscribe.setFrom(mFriendName);
-            instance.connection.sendStanza(unsubscribe);
+            Presence unsubscribed = new Presence(Presence.Type.unsubscribed);
+            unsubscribed.setTo(mFriendName);
+            instance.connection.sendStanza(unsubscribed);
             return true;
-
         }catch (SmackException.NotLoggedInException | SmackException.NoResponseException |
                 XMPPException.XMPPErrorException | SmackException.NotConnectedException e) {
             e.printStackTrace();
             return false;
         }
     }
+
+
+    public void receiveFile() {
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
+
+                if (sdm == null) {
+                    sdm = ServiceDiscoveryManager.getInstanceFor(connection);
+                }
+
+                sdm.addFeature("http://jabber.org/protocol/disco#info");
+
+                sdm.addFeature("jabber:iq:privacy");
+
+                // Create the file transfer manager
+                final FileTransferManager managerListner = FileTransferManager.getInstanceFor(connection);
+
+            //    FileTransferNegotiator.setServiceEnabled(connection, true);
+                FileTransferNegotiator negotiator = FileTransferNegotiator.getInstanceFor(connection);
+
+                Log.i("File transfere manager", "created");
+
+                // Create the listener
+                managerListner
+                        .addFileTransferListener(new FileTransferListener() {
+                            @Override
+                            public void fileTransferRequest(FileTransferRequest request) {
+
+                                Log.i("Recieve File","new file transfere request  new file transfere request   new file transfere request");
+
+                                Log.i("file request","from" + request.getRequestor());
+
+                                IncomingFileTransfer transfer = request.accept();
+
+                        //        Log.i("Recieve File alert dialog", "accepted");
+
+                                try {
+
+                                //    transfer.recieveFile(new File("/sdcard/"+ request.getFileName()));
+
+                                    while (!transfer.isDone() || (transfer.getProgress() < 1)) {
+
+                                        Thread.sleep(1000);
+                                    //    Log.i("Recieve File alert dialog", "still receiving : "+ (transfer.getProgress()) + " status "+ transfer.getStatus());
+
+                                        /*if (transfer.getStatus().equals(Status.error)) {
+                                            // Log.i("Error file",
+                                            // transfer.getError().getMessage());
+                                            Log.i("Recieve File alert dialog",
+                                                    "cancelling still receiving : "
+                                                            + (transfer.getProgress())
+                                                            + " status "
+                                                            + transfer.getStatus());
+                                            transfer.cancel();
+
+                                            break;
+                                        }*/
+
+                                    }
+
+                                } /*catch (XMPPException e) {
+
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }*/ catch (InterruptedException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        });
+            }
+        });
+        thread.start();
+
+    }
+
+
+
 
     public ArrayList<RosterEntry> getAllFriendList(){
         ArrayList<RosterEntry> friendList = new ArrayList<RosterEntry>();

@@ -16,12 +16,17 @@ import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterGroup;
 import org.jivesoftware.smackx.muc.DiscussionHistory;
+import org.jivesoftware.smackx.muc.HostedRoom;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jivesoftware.smackx.xdata.Form;
+import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 
 public class GroupActivity extends Activity {
@@ -38,10 +43,21 @@ public class GroupActivity extends Activity {
 
         //Roster roster = Roster.getInstanceFor(chatApp.connection);
         //Collection<RosterGroup> groups = roster.getGroups();
+        MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(chatApp.connection);
+        Set<String> strings = manager.getJoinedRooms();
+        try {
+            List<HostedRoom> hostedRooms = manager.getHostedRooms(ChatApp.SERVICE);
+        } catch (SmackException.NoResponseException e) {
+            e.printStackTrace();
+        } catch (XMPPException.XMPPErrorException e) {
+            e.printStackTrace();
+        } catch (SmackException.NotConnectedException e) {
+            e.printStackTrace();
+        }
 
 
-        etGroupName = (EditText)findViewById(R.id.etGroupName);
-        btnCreateGroup = (Button)findViewById(R.id.btnCreateGroup);
+        etGroupName = (EditText) findViewById(R.id.etGroupName);
+        btnCreateGroup = (Button) findViewById(R.id.btnCreateGroup);
         /**
          * Click create group button
          */
@@ -55,15 +71,18 @@ public class GroupActivity extends Activity {
     }
 
     private void createGroup() {
+
+
         //http://www.igniterealtime.org/builds/smack/docs/latest/documentation/extensions/muc.html
 
         // Get the MultiUserChatManager
         MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(chatApp.connection);
         // Get a MultiUserChat using MultiUserChatManager
-        MultiUserChat muc = manager.getMultiUserChat("myroom"+"@conference."+ChatApp.SERVICE);
+        MultiUserChat muc = manager.getMultiUserChat("myroom" + "@conference." + ChatApp.SERVICE);
         // Create the room
         try {
             muc.create("vinay");
+            muc.join("vinay");
             muc.invite("vinay@xmpp.deepco.com.br/Good", "Meet me in this excellent room");
         } catch (XMPPException.XMPPErrorException e) {
             e.printStackTrace();

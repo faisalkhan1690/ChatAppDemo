@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="UserName"
-            android:text="deepak" />
+            android:text="ranjeet" />
     </LinearLayout>
 
     <LinearLayout
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:hint="Password"
             android:inputType="textPassword"
-            android:text="123" />
+            android:text="ranjeet" />
     </LinearLayout>
 
     <LinearLayout

@@ -2,6 +2,7 @@ package com.example.chatappdemo;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -26,8 +27,18 @@ import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.filetransfer.FileTransfer;
+import org.jivesoftware.smackx.filetransfer.FileTransferListener;
+import org.jivesoftware.smackx.filetransfer.FileTransferManager;
+import org.jivesoftware.smackx.filetransfer.FileTransferNegotiator;
+import org.jivesoftware.smackx.filetransfer.FileTransferRequest;
+import org.jivesoftware.smackx.filetransfer.IncomingFileTransfer;
+import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
 import org.jivesoftware.smackx.iqregister.AccountManager;
 import org.jivesoftware.smack.packet.Presence.Type;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,6 +47,7 @@ import java.util.List;
 
 public class ChatApp {
 
+    public static final String RECIEVE_FILE_ALERT_DIALOG = "RecieveFiledialog";
     private static ChatApp instance = null;
     public static final String HOST = "192.168.1.64";
     public static final int PORT = 5222;
@@ -203,6 +215,45 @@ public class ChatApp {
         }
     }
 
+    public void fileTransfer(String filenameWithPath, Bitmap thumbnail, String userId)
+    {
+       // FileTransferManager manager = new FileTransferManager(connection);
+        FileTransferManager manager = FileTransferManager.getInstanceFor(connection);
+    //    OutgoingFileTransfer transfer = manager.createOutgoingFileTransfer("usre2@myHost/Smack");
+        OutgoingFileTransfer transfer = manager.createOutgoingFileTransfer(userId+"/Good");
+
+        File file = new File(filenameWithPath);
+        try {
+            transfer.sendFile(file, "test_file") ;
+        } catch (SmackException e) {
+            e.printStackTrace();
+        }
+
+        while(!transfer.isDone()) {
+            if(transfer.getStatus().equals(FileTransfer.Status.error)) {
+                System.out.println("ERROR!!! " + transfer.getError());
+            } else if (transfer.getStatus().equals(FileTransfer.Status.cancelled)
+                    || transfer.getStatus().equals(FileTransfer.Status.refused)) {
+                System.out.println("Cancelled!!! " + transfer.getError());
+            }
+            try {
+                Thread.sleep(1000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(transfer.getStatus().equals(FileTransfer.Status.refused) || transfer.getStatus().equals(FileTransfer.Status.error)
+                || transfer.getStatus().equals(FileTransfer.Status.cancelled)){
+        System.out.println("refused cancelled error " + transfer.getError());
+        } else {
+            System.out.println("Success");
+        }
+    }
+
+
+
+
 
     /**
      * Called by Settings dialog when a connection is establised with the XMPP
@@ -243,8 +294,74 @@ public class ChatApp {
 
                 }
             }, filter);
+            recieveFile(connection);
+
 
         }
+    }
+
+    public void recieveFile(AbstractXMPPConnection connection) {
+        //**************************************
+
+
+        // Create the file transfer manager
+        final FileTransferManager managerListner = FileTransferManager.getInstanceFor(connection);
+
+        //    FileTransferNegotiator.setServiceEnabled(connection, true);
+        FileTransferNegotiator negotiator = FileTransferNegotiator.getInstanceFor(connection);
+
+        Log.i("File transfere manager", "created");
+
+        // Create the listener
+        managerListner
+                .addFileTransferListener(new FileTransferListener() {
+                    @Override
+                    public void fileTransferRequest(FileTransferRequest request) {
+
+                        Log.i("Recieve File", "new file transfere request  new file transfere request   new file transfere request");
+
+                        Log.i("file request", "from" + request.getRequestor());
+
+                        IncomingFileTransfer transfer = request.accept();
+
+                        Log.i(RECIEVE_FILE_ALERT_DIALOG, "accepted");
+
+                        try {
+
+                            //    transfer.recieveFile(new File("/sdcard/"+ request.getFileName()));
+
+                            while (!transfer.isDone() || (transfer.getProgress() < 1)) {
+
+                                Thread.sleep(1000);
+                                Log.i(RECIEVE_FILE_ALERT_DIALOG, "still receiving : " + (transfer.getProgress()) + " status " + transfer.getStatus());
+
+                                if (transfer.getStatus().equals(FileTransfer.Status.error)) {
+                                    // Log.i("Error file",
+                                    // transfer.getError().getMessage());
+                                    Log.i("Recieve File",
+                                            "cancelling still receiving : "
+                                                    + (transfer.getProgress())
+                                                    + " status "
+                                                    + transfer.getStatus());
+                                    transfer.cancel();
+
+                                    break;
+                                }
+                            }
+
+                        } /*catch (XMPPException e) {
+
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }*/ catch (InterruptedException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+
+        //**************************************
     }
 
     /**
@@ -349,4 +466,87 @@ public class ChatApp {
             return false;
         }
     }
+
+
+    public void receiveFile() {
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
+
+                if (sdm == null) {
+                    sdm = ServiceDiscoveryManager.getInstanceFor(connection);
+                }
+
+                sdm.addFeature("http://jabber.org/protocol/disco#info");
+
+                sdm.addFeature("jabber:iq:privacy");
+
+                // Create the file transfer manager
+                final FileTransferManager managerListner = FileTransferManager.getInstanceFor(connection);
+
+            //    FileTransferNegotiator.setServiceEnabled(connection, true);
+                FileTransferNegotiator negotiator = FileTransferNegotiator.getInstanceFor(connection);
+
+                Log.i("File transfere manager", "created");
+
+                // Create the listener
+                managerListner
+                        .addFileTransferListener(new FileTransferListener() {
+                            @Override
+                            public void fileTransferRequest(FileTransferRequest request) {
+
+                                Log.i("Recieve File","new file transfere request  new file transfere request   new file transfere request");
+
+                                Log.i("file request","from" + request.getRequestor());
+
+                                IncomingFileTransfer transfer = request.accept();
+
+                        //        Log.i("Recieve File alert dialog", "accepted");
+
+                                try {
+
+                                //    transfer.recieveFile(new File("/sdcard/"+ request.getFileName()));
+
+                                    while (!transfer.isDone() || (transfer.getProgress() < 1)) {
+
+                                        Thread.sleep(1000);
+                                    //    Log.i("Recieve File alert dialog", "still receiving : "+ (transfer.getProgress()) + " status "+ transfer.getStatus());
+
+                                        /*if (transfer.getStatus().equals(Status.error)) {
+                                            // Log.i("Error file",
+                                            // transfer.getError().getMessage());
+                                            Log.i("Recieve File alert dialog",
+                                                    "cancelling still receiving : "
+                                                            + (transfer.getProgress())
+                                                            + " status "
+                                                            + transfer.getStatus());
+                                            transfer.cancel();
+
+                                            break;
+                                        }*/
+
+                                    }
+
+                                } /*catch (XMPPException e) {
+
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }*/ catch (InterruptedException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        });
+            }
+        });
+        thread.start();
+
+    }
+
+
+
 }

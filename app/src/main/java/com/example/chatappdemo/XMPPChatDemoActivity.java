@@ -64,7 +64,7 @@ public class XMPPChatDemoActivity extends Activity implements OnClickListener, C
         rcd=this;
         app.initializeListener(rcd);
 
-        app.recieveFile(app.connection);
+       // app.recieveFile(app.connection);
 
 
 

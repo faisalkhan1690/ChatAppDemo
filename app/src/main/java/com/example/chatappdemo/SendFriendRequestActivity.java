@@ -93,4 +93,5 @@ public class SendFriendRequestActivity extends Activity implements View.OnClickL
         adapter = new FriendRequestSendAdapter(SendFriendRequestActivity.this, mRequestList);
         lvPendingRequest.setAdapter(adapter);
     }
+
 }

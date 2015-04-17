@@ -18,12 +18,14 @@ import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
+import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.iqregister.AccountManager;
@@ -133,36 +135,7 @@ public class ChatApp {
     }
 
 
-    /**
-     * Return Friend list
-     *
-     * @return
-     */
-    public Collection<RosterEntry> getFriendList() {
-        Roster roster = Roster.getInstanceFor(connection);
-        Collection<RosterEntry> entries = roster.getEntries();
-        for (RosterEntry entry : entries) {
-            Log.d("XMPPChatDemoActivity",
-                    "--------------------------------------");
-            Log.d("XMPPChatDemoActivity", "RosterEntry " + entry);
-            Log.d("XMPPChatDemoActivity", "User: " + entry.getUser());
-            Log.d("XMPPChatDemoActivity", "Name: " + entry.getName());
-            Log.d("XMPPChatDemoActivity", "Status: " + entry.getStatus());
-            Log.d("XMPPChatDemoActivity", "Type: " + entry.getType());
-            Presence entryPresence = roster.getPresence(entry.getUser());
 
-            Log.d("XMPPChatDemoActivity",
-                    "Presence Status: " + entryPresence.getStatus());
-            Log.d("XMPPChatDemoActivity",
-                    "Presence Type: " + entryPresence.getType());
-            Presence.Type type = entryPresence.getType();
-            if (type == Presence.Type.available)
-                Log.d("XMPPChatDemoActivity", "Presence AVIALABLE");
-            Log.d("XMPPChatDemoActivity", "Presence : " + entryPresence);
-
-        }
-        return entries;
-    }
 
     /**
      *
@@ -262,6 +235,20 @@ public class ChatApp {
         }
     }
 
+    public List<RosterEntry> getAllFriendRequestsSend() {
+        List<RosterEntry> mFriendRequests = new ArrayList<RosterEntry>();
+        Roster roster = Roster.getInstanceFor(instance.connection);
+
+        Collection<RosterEntry> entries = roster.getEntries();
+        for (RosterEntry entry : entries) {
+            if(entry.getType().toString().equals("to") && entry.getStatus()==null){
+                mFriendRequests.add(entry);
+            }
+        }
+        return mFriendRequests;
+    }
+
+
     public interface MessageRcd {
         public void onMessageReceived(String message);
     }
@@ -284,6 +271,7 @@ public class ChatApp {
             try {
                 roster.createEntry(friendId, friendId, null);
                 Presence subscribe = new Presence(Presence.Type.subscribe);
+                subscribe.setTo(friendId);
                 subscribe.setFrom(friendId);
                 instance.connection.sendStanza(subscribe);
                 return true;
@@ -299,22 +287,33 @@ public class ChatApp {
     }
 
 
-    public List<RosterEntry> getAllFriendRequests(){
+    public List<RosterEntry> getAllFriendRequestsReceive(){
         List<RosterEntry> mFriendRequests = new ArrayList<RosterEntry>();
-        List<RosterEntry> mFriendList;
         Roster roster = Roster.getInstanceFor(instance.connection);
-        mFriendList=new ArrayList<RosterEntry>(instance.getFriendList());
 
-
-        for (RosterEntry item : mFriendList) {
-            Presence entryPresence = roster.getPresence(item.getUser());
-            if (!item.getType().name().equals("")) {
-                if (item.getType().name().equalsIgnoreCase("both")) {
-                    mFriendRequests.add(item);
-                }
+        Collection<RosterEntry> entries = roster.getEntries();
+        for (RosterEntry entry : entries) {
+            if(entry.getType().toString().equals("from") && entry.getName()==null){
+                mFriendRequests.add(entry);
             }
         }
         return mFriendRequests;
+    }
+
+
+    /**
+     * Return Friend list
+     *
+     * @return
+     */
+    public Collection<RosterEntry> getFriendList() {
+        Roster roster = Roster.getInstanceFor(connection);
+        Collection<RosterEntry> entries = roster.getEntries();
+        for (RosterEntry entry : entries) {
+            Presence entryPresence = roster.getPresence(entry.getUser());
+            Presence.Type type = entryPresence.getType();
+        }
+        return entries;
     }
 
 
@@ -337,12 +336,33 @@ public class ChatApp {
 
     public boolean rejectFriendRequest(String mFriendName){
         Roster roster = Roster.getInstanceFor(instance.connection);
+       try {
+           roster.createEntry(mFriendName, mFriendName, null);
+           Presence unsubscribe = new Presence(Type.unsubscribe);
+           unsubscribe.setTo(mFriendName);
+           unsubscribe.setFrom(mFriendName);
+           instance.connection.sendStanza(unsubscribe);
+           return true;
+
+        }catch (SmackException.NotLoggedInException | SmackException.NoResponseException |
+                XMPPException.XMPPErrorException | SmackException.NotConnectedException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
+
+    public boolean cancelFriendRequest(String mFriendName) {
+        Roster roster = Roster.getInstanceFor(instance.connection);
         try {
             roster.createEntry(mFriendName, mFriendName, null);
-            Presence unsubscribed = new Presence(Type.unsubscribe);
-            unsubscribed.setTo(mFriendName);
-            instance.connection.sendStanza(unsubscribed);
+            Presence unsubscribe = new Presence(Type.unsubscribe);
+            unsubscribe.setTo(mFriendName);
+            unsubscribe.setFrom(mFriendName);
+            instance.connection.sendStanza(unsubscribe);
             return true;
+
         }catch (SmackException.NotLoggedInException | SmackException.NoResponseException |
                 XMPPException.XMPPErrorException | SmackException.NotConnectedException e) {
             e.printStackTrace();
@@ -356,8 +376,11 @@ public class ChatApp {
 
         Collection<RosterEntry> entries = roster.getEntries();
         for (RosterEntry entry : entries) {
+            if(entry.getType().toString().equals("both"))
             friendList.add(entry);
         }
         return friendList;
     }
+
+
 }

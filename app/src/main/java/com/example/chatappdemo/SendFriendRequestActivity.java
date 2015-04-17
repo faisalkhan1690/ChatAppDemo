@@ -9,11 +9,17 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.chatappdemo.Adapter.FriendRequestReceiveAdapter;
+import com.example.chatappdemo.Adapter.FriendRequestSendAdapter;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.util.StringUtils;
+
+import java.util.List;
 
 
 public class SendFriendRequestActivity extends Activity implements View.OnClickListener {
@@ -23,6 +29,8 @@ public class SendFriendRequestActivity extends Activity implements View.OnClickL
     private ListView lvPendingRequest;
     private String mFriendId = "";
     private ChatApp chatApp;
+    private List<RosterEntry> mRequestList;
+    private FriendRequestSendAdapter adapter;
 
 
     @Override
@@ -46,6 +54,7 @@ public class SendFriendRequestActivity extends Activity implements View.OnClickL
             }
         });
         chatApp = ChatApp.getInstance();
+        showAllFriendRequest();
     }
 
     @Override
@@ -76,5 +85,12 @@ public class SendFriendRequestActivity extends Activity implements View.OnClickL
         mFriendId = etNameOfFriend.getText().toString().trim() + "@" + ChatApp.SERVICE;
         return chatApp.sendFriendRequest(mFriendId);
 
+    }
+
+    private void showAllFriendRequest() {
+
+        mRequestList=chatApp.getAllFriendRequestsSend();
+        adapter = new FriendRequestSendAdapter(SendFriendRequestActivity.this, mRequestList);
+        lvPendingRequest.setAdapter(adapter);
     }
 }

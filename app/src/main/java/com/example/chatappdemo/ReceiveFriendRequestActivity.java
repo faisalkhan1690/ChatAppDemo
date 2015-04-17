@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ListView;
 
-import com.example.chatappdemo.Adapter.FriendRequestAdapter;
+import com.example.chatappdemo.Adapter.FriendRequestReceiveAdapter;
 
 import org.jivesoftware.smack.roster.RosterEntry;
 
@@ -15,7 +15,7 @@ public class ReceiveFriendRequestActivity extends Activity {
     private ListView lvRequestList;
     private List<RosterEntry> mFriendRequestList;
     private ChatApp chatApp;
-    private FriendRequestAdapter adapter;
+    private FriendRequestReceiveAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +29,8 @@ public class ReceiveFriendRequestActivity extends Activity {
 
     private void showAllFriendRequest() {
 
-        mFriendRequestList=chatApp.getAllFriendRequests();
-        adapter = new FriendRequestAdapter(ReceiveFriendRequestActivity.this, mFriendRequestList);
+        mFriendRequestList=chatApp.getAllFriendRequestsReceive();
+        adapter = new FriendRequestReceiveAdapter(ReceiveFriendRequestActivity.this, mFriendRequestList);
         lvRequestList.setAdapter(adapter);
     }
 }

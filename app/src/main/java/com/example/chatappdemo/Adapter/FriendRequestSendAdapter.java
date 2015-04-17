@@ -7,12 +7,15 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.example.chatappdemo.ChatApp;
 import com.example.chatappdemo.R;
+
 import org.jivesoftware.smack.roster.RosterEntry;
+
 import java.util.List;
 
-public class FriendRequestAdapter extends BaseAdapter {
+public class FriendRequestSendAdapter extends BaseAdapter {
 
 	private Context context;
 	private List<RosterEntry> friendList;
@@ -21,7 +24,7 @@ public class FriendRequestAdapter extends BaseAdapter {
 	private String nickname;
 	private String idExtension;
 
-	public FriendRequestAdapter(Context context, List<RosterEntry> friendList) {
+	public FriendRequestSendAdapter(Context context, List<RosterEntry> friendList) {
 		this.context = context;
 		this.friendList = friendList;
 		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -58,7 +61,9 @@ public class FriendRequestAdapter extends BaseAdapter {
 			v = inflater.inflate(R.layout.list_row_friend_request_list, null);
 			holder.tvFriendName = (TextView) v.findViewById(R.id.tvFriendName);
 			holder.tvAccept = (TextView) v.findViewById(R.id.tvAccept);
+            holder.tvAccept.setVisibility(View.GONE);
 			holder.tvDenny = (TextView) v.findViewById(R.id.tvDenny);
+            holder.tvDenny.setText("Cancel Request");
 			v.setTag(holder);
 		} else {
 			holder = (ViewHolderItem) v.getTag();
@@ -68,22 +73,7 @@ public class FriendRequestAdapter extends BaseAdapter {
 		if (friendList.get(position) != null) {
 			holder.tvFriendName.setText("" + friendList.get(position).getUser());
 		}
-		// accept friend request
-		holder.tvAccept.setOnClickListener(new View.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				if (AcceptFriendRequestSubscribed(friendList.get(position).getUser())) {
-					Toast.makeText(context, "Accept Friend Request Successfully", Toast.LENGTH_SHORT).show();
-				} else {
-					Toast.makeText(context, "Accept Friend Request fail", Toast.LENGTH_SHORT).show();
-				}
-			}
-
-			private boolean AcceptFriendRequestSubscribed(String mFriendName) {
-                return app.acceptFriendRequest(mFriendName);
-			}
-		});
 
 		// denny friend request
 		holder.tvDenny.setOnClickListener(new View.OnClickListener() {
@@ -92,9 +82,9 @@ public class FriendRequestAdapter extends BaseAdapter {
 			public void onClick(View v) {
 
 				if (RejectFriendRequest(friendList.get(position).getUser())) {
-					Toast.makeText(context, "Denny Friend Request Successfully", Toast.LENGTH_SHORT).show();
+					Toast.makeText(context, "Cancel Friend Request Successfully", Toast.LENGTH_SHORT).show();
 				} else {
-					Toast.makeText(context, "Denny Friend Request fail", Toast.LENGTH_SHORT).show();
+					Toast.makeText(context, "Cancel Friend Request fail", Toast.LENGTH_SHORT).show();
 				}
 			}
 

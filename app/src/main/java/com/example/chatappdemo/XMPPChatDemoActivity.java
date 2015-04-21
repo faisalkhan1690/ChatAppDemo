@@ -30,7 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class XMPPChatDemoActivity extends Activity implements OnClickListener, ChatApp.MessageRcd {
+public class XMPPChatDemoActivity extends Activity {
 
 
 	private EditText recipient;
@@ -43,8 +43,6 @@ public class XMPPChatDemoActivity extends Activity implements OnClickListener, C
 	private ArrayList<String> messages = new ArrayList<String>();
 	private TextView txtStatus;
 	private String user;
-	private TextView txtFileTransfer;
-	private ImageView imgDocument;
 	ImageView viewImage;
 	private Object progressDialog;
 	private String memberChat;
@@ -61,12 +59,7 @@ public class XMPPChatDemoActivity extends Activity implements OnClickListener, C
 		viewImage = (ImageView) findViewById(R.id.viewImage);
 
 		app = ChatApp.getInstance();
-        rcd=this;
         app.initializeListener(rcd);
-
-       // app.recieveFile(app.connection);
-
-
 
         recipient = (EditText) this.findViewById(R.id.toET);
 		textMessage = (EditText) this.findViewById(R.id.chatET);
@@ -102,9 +95,7 @@ public class XMPPChatDemoActivity extends Activity implements OnClickListener, C
 		});
 
 
-		// Choose image from gallery
-		imgDocument = (ImageView) findViewById(R.id.imgDocument);
-		imgDocument.setOnClickListener(this);
+
 	}
 
 
@@ -116,121 +107,4 @@ public class XMPPChatDemoActivity extends Activity implements OnClickListener, C
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.listitem, messages);
 		listview.setAdapter(adapter);
 	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		//app.sendMessage(getText(recipient), "Bye",memberChat);
-
-	}
-    @Override
-    public void onMessageReceived(String message) {
-
-        messages.add(message);
-        setListAdapter();
-    }
-
-    @Override
-    public void onClick(View v) {
-
-        switch (v.getId())
-        {
-            case R.id.imgDocument:
-                    selectImage();
-                break;
-
-            default:
-                break;
-        }
-
-    }
-
-
-
-    private void selectImage() {
-
-        final CharSequence[] options = { "Take Photo", "Choose from Gallery", "Cancel" };
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(XMPPChatDemoActivity.this);
-        builder.setTitle("Add Photo!");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-                if (options[item].equals("Take Photo")) {
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-                    startActivityForResult(intent, 1);
-                } else if (options[item].equals("Choose from Gallery")) {
-                    Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(intent, 2);
-
-                } else if (options[item].equals("Cancel")) {
-                    dialog.dismiss();
-                }
-            }
-        });
-        builder.show();
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-            if (requestCode == 1) {
-                File f = new File(Environment.getExternalStorageDirectory().toString());
-                for (File temp : f.listFiles()) {
-                    if (temp.getName().equals("temp.jpg")) {
-                        f = temp;
-                        break;
-                    }
-                }
-
-                try {
-                    Bitmap bitmap;
-                    BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-
-                    bitmap = BitmapFactory.decodeFile(f.getAbsolutePath(), bitmapOptions);
-
-                    viewImage.setImageBitmap(bitmap);
-
-                    String path = android.os.Environment.getExternalStorageDirectory() + File.separator + "Phoenix" + File.separator + "default";
-                    f.delete();
-                    OutputStream outFile = null;
-                    File file = new File(path, String.valueOf(System.currentTimeMillis()) + ".jpg");
-                    try {
-                        outFile = new FileOutputStream(file);
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 85, outFile);
-                        outFile.flush();
-                        outFile.close();
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else if (requestCode == 2) {
-
-                Uri selectedImage = data.getData();
-                String[] filePath = { MediaStore.Images.Media.DATA };
-                Cursor c = getContentResolver().query(selectedImage, filePath, null, null, null);
-                c.moveToFirst();
-                int columnIndex = c.getColumnIndex(filePath[0]);
-                String picturePath = c.getString(columnIndex);
-                c.close();
-                Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
-            //    Log.i("path of image from gallery......******************.........", picturePath + "");
-                viewImage.setImageBitmap(thumbnail);
-                //sendData(user, picturePath);
-                app.fileTransfer(picturePath,thumbnail, getText(recipient));
-            }
-        }
-
-    }
 }

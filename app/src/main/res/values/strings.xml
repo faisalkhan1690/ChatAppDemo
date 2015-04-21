@@ -16,5 +16,6 @@
     <string name="friends_request">Friend Requests</string>
     <string name="addfriend">Add Friend</string>
     <string name="title_group">create Group</string>
+    <string name="title_activity_splash_screen_actvity">SplashScreenActvity</string>
 
 </resources>

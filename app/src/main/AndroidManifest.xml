@@ -53,7 +53,10 @@
             android:name=".GroupActivity"
             android:label="@string/title_group" >
         </activity>
-
+        <activity
+            android:name=".SplashScreenActvity"
+            android:label="@string/title_activity_splash_screen_actvity" >
+        </activity>
     </application>
 
 </manifest>

@@ -36,6 +36,8 @@ public class FriendListActivity extends Activity implements View.OnClickListener
 
         friendList=chatApp.getAllFriendList();
 
+        // faisal
+
         lvFriendList = (ListView) findViewById(R.id.lvFriendList);
         friendListAdapter = new FriendListAdapter(FriendListActivity.this, friendList, roster);
         lvFriendList.setAdapter(friendListAdapter);
